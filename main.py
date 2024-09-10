@@ -4,7 +4,7 @@ import time
 
 # Variables:
 # Retry time
-Retry_Time = 30
+Retry_Time = 60
 # Path to your custom OCI config file
 config_path = "config"
 # Instance OCID (replace with your actual VM OCID)
