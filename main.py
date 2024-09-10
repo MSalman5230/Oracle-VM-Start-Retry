@@ -1,14 +1,19 @@
 import oci
 import time
 
+
+# Variables:
+# Retry time
+Retry_Time = 30
 # Path to your custom OCI config file
-config_path = "C:\MegaSync\Projects\SSHKeys\OCI-Config\config.txt"
+config_path = "config"
+# Instance OCID (replace with your actual VM OCID)
+instance_id = "ocid1.instance.oc1.ap-singapore-1.anzwsljra5grx2iclv4zs6rwap4zjvxxzdtyidykng7sg2omsauhizwfe65a"
+
 
 # OCI Configuration
 config = oci.config.from_file(config_path)  # Make sure you have the OCI config file set up
 
-# Instance OCID (replace with your actual VM OCID)
-instance_id = "ocid1.instance.oc1.ap-singapore-1.anzwsljra5grx2iclv4zs6rwap4zjvxxzdtyidykng7sg2omsauhizwfe65a"
 
 # Create the compute client
 compute_client = oci.core.ComputeClient(config)
@@ -28,9 +33,9 @@ def start_vm():
             print(f"VM is in {instance.lifecycle_state} state.")
     except oci.exceptions.ServiceError as e:
         if "Out of host capacity" in str(e):
-            print("Out of host capacity, retrying in 60 seconds...")
+            print(f"Out of host capacity, retrying in {Retry_Time} seconds...")
         else:
-            print(f"Failed to start VM: {e}")
+            print(f"Failed to start VM: {e}, retrying in {Retry_Time} seconds...")
 
 
 if __name__ == "__main__":
@@ -39,4 +44,4 @@ if __name__ == "__main__":
             start_vm()
         except Exception as e:
             print(e)
-        time.sleep(60)
+        time.sleep(Retry_Time)
